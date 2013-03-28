@@ -25,9 +25,11 @@
 							 	<div class="field">{{ form_widget(form.file) }}</div>
 
 							 	{{ form_rest(form) }}
-							    <div class="button">
+							    <!-- <div class="button">
 									<input type="submit" class="general_button" value="Upload !">
 								</div>
+							-->
+								<a href="#" onClick="this.form.submit();" class="general_button small fr"><span>Upload</span></a>
 							</form>
 					</div>
 					<div class="clearboth"></div>
@@ -59,8 +61,7 @@
 		   		<div class="modal-footer">
 		   			<!-- <button class="btn" data-dismiss="modal" aria-hidden="true">Fermer</button>
 		   			<input type="submit" class="btn btn-primary" />	-->
-		   			<button class="general_button small type_3" data-dismiss="modal" aria-hidden="true">Fermer</button>
-		   			<input type="submit" class="general_button small" />	
+		   			<a href="#" class="general_button small type_3" data-dismiss="modal" aria-hidden="true"><span>Fermer</span></a> 
 		   		</div>
 			</div>
 		</div>
