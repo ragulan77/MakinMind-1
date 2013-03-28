@@ -1,0 +1,7 @@
+resource_homepage:
+    pattern:  /uploads/
+    defaults: { _controller: MakinMindResourceBundle:upload:upload }
+
+resource_personal_uploads:
+    pattern: /uploads/my-uploads
+    defaults: { _controller: MakinMindResourceBundle:upload:displayUploads }
