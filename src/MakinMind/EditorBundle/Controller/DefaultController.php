@@ -8,8 +8,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class DefaultController extends Controller
 {
     
-    public function indexAction($name)
+	public static function afficherVar()
+	{
+		$var = "test heheheo";
+	}
+
+    public function indexAction()
     {
-        return $this->render('MakinMindEditorBundle:Default:index.html.twig', array('name' => $name));
+    	self::afficherVar();
+    	echo $var;
+        return $this->render('MakinMindEditorBundle:Default:index.html.twig');
     }
 }

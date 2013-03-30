@@ -54,10 +54,6 @@ class File
      */
     private $author;
 
-    /**
-     * @ORM\OneToOne(targetEntity="MakinMind\ResourceBundle\Entity\Resource", cascade={"persist"})
-     */
-    private $file;
 
     /**
      * Get id
@@ -169,23 +165,4 @@ class File
         return $this->author;
     }
 
-    /**
-     * Set file
-     *
-     * @param MakinMind\ResourceBundle\Entity\Resource $file
-     */
-    public function setFile(\MakinMind\ResourceBundle\Entity\Resource $file)
-    {
-        $this->file = $file;
-    }
-
-    /**
-     * Get file
-     *
-     * @return MakinMind\ResourceBundle\Entity\Resource 
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
 }
