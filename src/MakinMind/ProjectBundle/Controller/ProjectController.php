@@ -428,7 +428,16 @@ class ProjectController extends Controller
             //$project->setLogo($resourceLogo);
             $em->persist($project);
             $em->flush();
-       
+            
+            // create default directories for project
+            $dir = $this->get('kernel')->getRootDir();
+            $dir = str_replace('/app', '/src/MakinMind/ProjectBundle/Resources/Projects', $dir);
+            $dir .= '/P' . $project->getId();
+            mkdir($dir, 0755);
+            mkdir($dir.'/Resources', 0755);
+            mkdir($dir . '/Src', 0755);
+
+
             return $this->redirect($this->generateUrl('projects'));
           //}
         }
