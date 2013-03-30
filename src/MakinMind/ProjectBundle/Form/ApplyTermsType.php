@@ -16,7 +16,7 @@ class ApplyTermsType extends AbstractType
             ->add('specialization', 'text')
             ->add('numberWorkedYears', 'integer')
             ->add('hoursPerWeek', 'integer')
-            ->add('paralleleContract', 'checkbox')
+            ->add('paralleleContract', 'checkbox', array('required' => false))
         ;
     }
 

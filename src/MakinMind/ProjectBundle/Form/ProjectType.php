@@ -16,7 +16,7 @@ class ProjectType extends AbstractType
             ->add('longDescription', 'textarea')
             ->add('beginDate', 'date')
             ->add('endingDate', 'date')
-            ->add('logo', new ResourceType())
+            //->add('logo', new ResourceType())
             ->add('domains', 'entity', array(
                                             'class' => 'MakinMindProjectBundle:Domains',
                                             'property' => 'name',

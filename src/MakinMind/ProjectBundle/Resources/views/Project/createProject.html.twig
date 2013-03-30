@@ -75,8 +75,7 @@
 					<p class="label">{{ form_label(formProject.longDescription, 'Déscription détaillée du projet :') }}</p>
 					<div class="textarea">{{ form_widget(formProject.longDescription) }}</div>
 
-					<p class="label">{{ form_label(formProject.logo, 'Logo du projet :') }}</p>
-					<div class="field" style="border: none;">{{ form_widget(formProject.logo) }}</div>
+
 
 					<div class="separator" style="height:40px;"></div>
 					<h3 class="heading_w_icon">Informations temporelles</h3>
@@ -108,11 +107,15 @@
 					<p class="label">{{ form_label(formProject.applyTerms.paralleleContract, 'Contrat parallèle autorisé :') }}</p>
 					<div class="field" style="border: none;">{{ form_widget(formProject.applyTerms.paralleleContract) }}</div>	
 			    	<div class="separator" style="height:20px;"></div>
-					<a href="this.form.submit();" class="general_button small"><span>Créer le projet</span></a>  
+			    	
+					<div class="button">
+						<input type="submit" class="general_button small" /> 
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	{{ form_rest(formProject) }}
 </form>
 
 {% endblock %}

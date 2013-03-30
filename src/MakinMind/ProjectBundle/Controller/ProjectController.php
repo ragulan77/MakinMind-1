@@ -14,6 +14,8 @@ use MakinMind\ProjectBundle\Entity\Contract;
 use MakinMind\UserBundle\Entity\User;
 
 use MakinMind\ProjectBundle\Entity\Request;
+use MakinMind\ProjectBundle\Entity\ApplyTerms;
+
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 
@@ -297,8 +299,13 @@ class ProjectController extends Controller
         $query->setParameter(1, $user);
         $myProjects = $query->getResult();
 
-        $query = $em->createQuery("SELECT p FROM MakinMind\ProjectBundle\Entity\Project p WHERE p not in (?1)");
-        $query->setParameter(1, $myProjects);
+        if($myProjects)
+        {
+          $query = $em->createQuery("SELECT p FROM MakinMind\ProjectBundle\Entity\Project p WHERE p not in (?1)");
+          $query->setParameter(1, $myProjects);
+        }
+        else
+          $query = $em->createQuery("SELECT p FROM MakinMind\ProjectBundle\Entity\Project p");
         $otherProjects = $query->getResult();
 
       return $this->render('MakinMindProjectBundle:Project:list_projects.html.twig', 
@@ -408,21 +415,22 @@ class ProjectController extends Controller
     public function createProjectAction()
     {
         $project = new Project;
+        $project->setApplyTerms(new ApplyTerms());
         $formProject = $this->createForm(new ProjectType, $project);
         $request = $this->get('request');
         if ($request->getMethod() == 'POST') {
-          $formProject->bind($request);
-
-          if ($formProject->isValid()) {
+          $formProject->bindRequest($request);
+          //if ($formProject->isValid()) {
             $project->setRecruitment(0);
             $project->setOwner($this->container->get('security.context')->getToken()->getUser());
-            $project->getLogo()->upload();
             $em = $this->get('doctrine.orm.entity_manager');
+            //$resourceLogo = $em->getRepository('MakinMindResourceBundle:Resource')->findOneByUrl($fileName);
+            //$project->setLogo($resourceLogo);
             $em->persist($project);
             $em->flush();
        
             return $this->redirect($this->generateUrl('projects'));
-          }
+          //}
         }
        
         return $this->render('MakinMindProjectBundle:Project:createProject.html.twig', array(
