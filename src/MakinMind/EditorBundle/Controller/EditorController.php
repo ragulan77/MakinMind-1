@@ -398,13 +398,37 @@ class EditorController extends Controller
 						else
 						{
 							//àfaire
+
 							$out = FAILED;
 						}
 							
 					}
 					else
 					{
-						echo "bizare";
+						echo "ceci est le file name du dossier " . $fileName . '<br/>';
+						if(strcmp($oldOwnerEl, "FOLDER_SEPARATOR") == 0)
+							$dirInDb = '/' . $fileName;
+						else
+							$dirInDb = str_replace("FOLDER_SEPARATOR", "/", $oldOwnerEl) . '/' . $fileName;
+
+						$query = $em->createQuery("SELECT f FROM MakinMind\EditorBundle\Entity\File f WHERE f.project = ?1 and f.author = ?2 and f.name LIKE ?3");
+       					$query->setParameter(1, $project);
+       					$query->setParameter(2, $author);
+       					$query->setParameter(3, $dirInDb.'%');
+       					$files = $query->getResult();
+       					if($files)
+       					{
+       						foreach ($files as $file) {
+       							$dest = str_replace("FOLDER_SEPARATOR", '/', $destOwnerEl);
+       							if(strcmp($dest, "/") == 0)
+       								$newName = str_replace($dirInDb, '/' . $fileName, $file->getName());
+       							else
+       								$newName = str_replace($dirInDb, $dest . '/' . $fileName, $file->getName());
+       							$file->setName($newName);
+       						}
+       						$em->flush();
+       					}
+
 						$out = $treeManager->changeOrder($elementId, $oldOwnerEl, $destOwnerEl, $position);
 					}
 					
