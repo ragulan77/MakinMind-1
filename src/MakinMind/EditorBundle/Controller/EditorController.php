@@ -35,6 +35,20 @@ class EditorController extends Controller
  			$dir = str_replace('/app', '/src/MakinMind/ProjectBundle/Resources/Projects', $dir);
  			$dir .= '/P'.$project->getId();
 			$fichier = $request->query->get('fichier');
+
+			$user = $this->container->get('security.context')->getToken()->getUser();
+			$em = $this->get('doctrine.orm.entity_manager');
+			$fileInDb = $em->getRepository('MakinMindEditorBundle:File')->findOneByName(str_replace('FOLDER_SEPARATOR', '/', $fichier));
+			$editable = false;
+			if($fileInDb)
+			{
+				$author = $fileInDb->getAuthor();
+				$editable = false;
+				if( $author == $user || $fileInDb->getPrivileges())
+					$editable = true;
+			}
+
+
 			if(!empty($fichier))
 			{
 				
@@ -63,7 +77,7 @@ class EditorController extends Controller
 				fclose($fh);
 			}
 	    }
-		return $this->render('MakinMindEditorBundle:Editor:editor.html.twig', array('data'=>$data, 'project'=> $project, 'file'=> $fichier));
+		return $this->render('MakinMindEditorBundle:Editor:editor.html.twig', array('data'=>$data, 'project'=> $project, 'file'=> $fichier, 'editable'=> $editable));
 	}
 
 	/**
@@ -123,6 +137,7 @@ class EditorController extends Controller
 				$ownerEl = $request->request->get('ownerEl');
 				$slave = $request->request->get('slave');
 				$name = $request->request->get('name');
+
 				/**
 				 * insert new element
 				 */	
@@ -354,13 +369,9 @@ class EditorController extends Controller
 					$destOwnerEl = checkVariable($destOwnerEl); // path of destination
 					$position = (int) checkVariable($position);
 					
-					echo $oldOwnerEl . '<br/>';
-					echo $elementId . '<br/>';
-					echo $destOwnerEl . '<br/>';
 					$elementBis = str_replace("FOLDER_SEPARATOR", "/", $elementId);
 					$realElementId = $oldOwnerEl . '/' . substr($elementBis, strrpos($elementBis, "/"), strlen($elementBis));
 					$fileName = substr($realElementId, strrpos($realElementId, "/")+1);
-					echo $fileName . '<br/>';
 					$fullPath = $this->get('kernel')->getRootDir();
 	 				$fullPath = str_replace('/app', '/src/MakinMind/ProjectBundle/Resources/Projects', $fullPath);
 					$fullPath .= '/P'.$project->getId();
@@ -371,7 +382,6 @@ class EditorController extends Controller
 
 					$em = $this->get('doctrine.orm.entity_manager');
 					$author = $this->container->get('security.context')->getToken()->getUser();
-					echo $fullPath .'<br/>';
 					if(!is_dir($fullPath))
 					{
 						if(strcmp($oldOwnerEl, "FOLDER_SEPARATOR") == 0)
@@ -379,7 +389,6 @@ class EditorController extends Controller
 						else
 							$fileInDb = str_replace("FOLDER_SEPARATOR", "/", $oldOwnerEl) . '/' . $fileName;
 
-						echo 'in DB ' . $fileInDb . '<br/>';
 						$file = $em->getRepository('MakinMindEditorBundle:File')->findOneBy(array('name' => $fileInDb, 'project'=> $project->getId()));
 						if($file)
 						{
@@ -389,23 +398,18 @@ class EditorController extends Controller
 							else
 								$newName = $destOwner . '/' . $fileName;
 
-								
-							echo $newName .'<br/>';
 							$file->setName($newName); 
 							$em->flush();
 							$out = $treeManager->changeOrder($elementId, $oldOwnerEl, $destOwnerEl, $position);
 						}
 						else
 						{
-							//àfaire
-
 							$out = FAILED;
 						}
 							
 					}
 					else
 					{
-						echo "ceci est le file name du dossier " . $fileName . '<br/>';
 						if(strcmp($oldOwnerEl, "FOLDER_SEPARATOR") == 0)
 							$dirInDb = '/' . $fileName;
 						else
@@ -428,10 +432,8 @@ class EditorController extends Controller
        						}
        						$em->flush();
        					}
-
 						$out = $treeManager->changeOrder($elementId, $oldOwnerEl, $destOwnerEl, $position);
 					}
-					
 				}			
 				else{		
 					$out = FAILED;
@@ -472,5 +474,29 @@ class EditorController extends Controller
 		}
 
 		return new Response($newdata);
+	}
+
+	/**
+     * @Secure(roles="IS_AUTHENTICATED_REMEMBERED")
+     */
+	public function checkFileOwnerAction($fileParent, $file)
+	{
+		$fileParent = str_replace("FOLDER_SEPARATOR", "/", $fileParent);
+		$file = str_replace("FOLDER_SEPARATOR", "/", $file);
+		if(strcmp($fileParent, '/') == 0)
+			$realElementId = '/' . substr($file, strrpos($file, "/"), strlen($file));
+		else
+			$realElementId = $fileParent . '/' . substr($file, strrpos($file, "/"), strlen($file));
+		$em = $this->get('doctrine.orm.entity_manager');
+		$fileInDb = $em->getRepository('MakinMindEditorBundle:File')->findOneByName($realElementId);
+		if($fileInDb)
+		{
+			$author = $this->container->get('security.context')->getToken()->getUser();
+			if($fileInDb->getAuthor() == $author)
+				return new Response(1);
+			else
+				return new Response(0);
+		}
+		return new Response(1);
 	}
 }

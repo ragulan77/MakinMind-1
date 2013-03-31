@@ -116,7 +116,7 @@ function TreeOperations()
 	{
 		//treeOps.treeBusy = false; ajax makes it false
 		var info;
-		if (typeof(result) == "undefinedtest")
+		if (typeof(result) == "undefined")
 		{
 			info.id = "null";
 			info.name = "undefined";

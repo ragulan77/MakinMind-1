@@ -429,35 +429,66 @@ $.fn.simpleTree = function(opt){
 			}
 		};
 		TREE.moveNodeToLine = function(node){
-			TREE.checkNodeIsLast(dragNode_source[0]);
-			TREE.checkLineIsLast(node);
-			var parent = $(dragNode_source).parents('li:first');
-			var line = $(dragNode_source).prev('.line');
-			$(node).before(dragNode_source);
-			$(dragNode_source).before(line);
-			node.className = node.className.replace('-over','');
-			var nodeSize = $('>ul >li', parent).not('.line, .line-last').filter(':visible').size();
-			if(TREE.option.docToFolderConvert && nodeSize==0)
-			{
-				TREE.convertToDoc(parent);
-			}else if(nodeSize==0)
-			{
-				parent[0].className=parent[0].className.replace('open','close');
-				$('>ul',parent).hide();
-			}
 
-			// added by Erik Dohmen (2BinBusiness.nl) select node
-			if($('span:first',dragNode_source).attr('class')=='text')
-			{
-				$('.active',TREE).attr('class','text');
-				$('span:first',dragNode_source).attr('class','active');
-			}
+			var node_source = dragNode_source;
+			var url1  = Routing.generate('EditorBundle_checkFileOwner', { "fileParent": TREE.ownerElOfDraggingItem, "file": $(dragNode_source).attr('id') });
+			//alert(url1);
+			$.ajax({
+	            type: "POST",
+	            url: url1,
+	            data: $(this).serialize(),
+	            cache: false,
+	            dataType : 'text',
+	            success: function(data){
+	            	var response=$(data);
+	                if(!(parseInt(response)))
+	                {
+	                   alert("Vous n'avez pas le droit de modifier ce fichier");
+	                   window.location.reload();
+	               	}
+	               	else
+	               	{	      
+						if(typeof(TREE.option.afterMove) == 'function')
+						{
+							var pos = $(node_source).prevAll(':not(.line)').size();
+							TREE.option.afterMove($(node).parents('li:first'), $(node_source), pos);
+						}
+	               	}
+	            },
+	            beforeSend: function(){
+	            		TREE.checkNodeIsLast(node_source[0]);	              
+						TREE.checkLineIsLast(node);				
+						var parent = $(node_source).parents('li:first');
+						var line = $(node_source).prev('.line');
+						$(node).before(node_source);
+						$(node_source).before(line);
 
-			if(typeof(TREE.option.afterMove) == 'function')
-			{
-				var pos = $(dragNode_source).prevAll(':not(.line)').size();
-				TREE.option.afterMove($(node).parents('li:first'), $(dragNode_source), pos);
-			}
+						node.className = node.className.replace('-over','');
+						var nodeSize = $('>ul >li', parent).not('.line, .line-last').filter(':visible').size();
+						if(TREE.option.docToFolderConvert && nodeSize==0)
+						{
+							TREE.convertToDoc(parent);
+						}else if(nodeSize==0)
+						{
+							parent[0].className=parent[0].className.replace('open','close');
+							$('>ul',parent).hide();
+						}
+					
+						// added by Erik Dohmen (2BinBusiness.nl) select node
+						if($('span:first',node_source).attr('class')=='text')
+						{
+							$('.active',TREE).attr('class','text');
+							$('span:first',node_source).attr('class','active');
+						}
+	            },
+	            complete: function(){
+
+	            },
+	            error: function(){alert('error in ajax');
+	        	}
+        	});
+
+			 
 		};
 
 		TREE.addNode = function(id, text, callback)
@@ -549,7 +580,7 @@ $.fn.simpleTree = function(opt){
 					$('body').append('<div id="drag_container"><ul></ul></div>');
 					$('#drag_container').hide().css({opacity:'0.8'});
 					$('#drag_container >ul').html(cloneNode);
-					$("<img>").attr({id	: "tree_plus",src	: "js/jquery/plugins/simpleTree/images/plus.gif"}).css({width: "7px",display: "block",position: "absolute",left	: "5px",top: "5px", display:'none'}).appendTo("body");
+					$("<img>").attr({id	: "tree_plus",src	: "./images/plus.gif"}).css({width: "7px",display: "block",position: "absolute",left	: "5px",top: "5px", display:'none'}).appendTo("body");
 					$(document).bind("mousemove", {LI:LI}, TREE.dragStart).bind("mouseup",TREE.dragEnd);
 				}
 				return false;

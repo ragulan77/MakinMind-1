@@ -27,3 +27,9 @@ EditorBundle_modifyFile:
         expose: true
     requirements:
         id: \d+
+
+EditorBundle_checkFileOwner:
+    pattern: /checkFileOwner/{fileParent}/{file}
+    defaults: {_controller: MakinMindEditorBundle:Editor:checkFileOwner}
+    options:
+        expose: true

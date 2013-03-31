@@ -37,19 +37,25 @@
     height: 400px;
     }
 </style>
-		<!--<textarea name="newd" cols="70%" rows="50" id="testEdit">{{data}}</textarea>-->
+		<div hidden="true" id="editable">{{editable}}</div>
 		<p id="fileName" hidden="true">{{file}}</p>
 		<div id="editor">{{data}}</div>
 		<div class="separator" style="height:37px;"></div>
+		{% if editable %}
 		<div>
 			<button class="btn">Sauvegarder</button>
 		</div>
+		{% endif %}
 	<script type="text/javascript">
 		requirejs(["{{ asset('bundles/makinmindeditor/js/ace/src-min/modelist.js')}}"], function(modelist) {
 			var editor = ace.edit("editor");
 			var mode = modelist.getModeFromPath("{{file | replace({'FOLDER_SEPARATOR' : '/'})}}");
     		editor.getSession().setMode(mode.mode);
-    	
+    		//if he has no right
+    		var editable = $("#editable").text(); 
+    		if(!editable)
+    			editor.setReadOnly(true); 
+
 			$(".btn").click(function(){
 				var filename = $('#fileName').text();
 				var code = editor.getSession().getValue();
