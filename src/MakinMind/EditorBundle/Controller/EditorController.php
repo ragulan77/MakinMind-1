@@ -229,10 +229,12 @@ class EditorController extends Controller
 					if(!is_dir($fullPath))
 					{
 						if(strcmp($ownerEl, "FOLDER_SEPARATOR") == 0)
-							$realElementName = "/" . substr($fileName, strrpos($fileName, "/"), strlen($fileName));
+							$realElementName = substr($fileName, strrpos($fileName, "/"), strlen($fileName));
 						else
+						{	//echo  str_replace("FOLDER_SEPARATOR", "/", $ownerEl ) . '<br/>';
 							$realElementName = str_replace("FOLDER_SEPARATOR", "/", $ownerEl ) . substr($fileName, strrpos($fileName, "/"), strlen($fileName));
-						//echo $realElementName . '<br/>'; 
+						}
+						//echo $realElementName;
 						$file = $em->getRepository('MakinMindEditorBundle:File')->findOneBy(array('name' => $fileName, 'author' => $author->getId(), 'project'=>$project->getId()));
 						if($file)
 						{
@@ -249,12 +251,15 @@ class EditorController extends Controller
 					}
 					else // if dir
 					{
-						echo $elementId;
-						$fileName = str_replace("FOLDER_SEPARATOR", "/", $elementId);
+						if(strcmp($ownerEl, "FOLDER_SEPARATOR") == 0)
+							$realElementName = substr($fileName, strrpos($fileName, "/"), strlen($fileName));
+						else
+							$realElementName = str_replace("FOLDER_SEPARATOR", "/", $ownerEl ) . substr($fileName, strrpos($fileName, "/"), strlen($fileName));
+						//echo $realElementName;
 						$query = $em->createQuery("SELECT f FROM MakinMind\EditorBundle\Entity\File f WHERE f.project = ?1 and f.author = ?2 and f.name LIKE ?3");
        					$query->setParameter(1, $project);
        					$query->setParameter(2, $author);
-       					$query->setParameter(3, $fileName.'%');
+       					$query->setParameter(3, $realElementName.'%');
        					$files = $query->getResult();
        					if($files)
        					{
@@ -404,7 +409,8 @@ class EditorController extends Controller
 						}
 						else
 						{
-							$out = FAILED;
+							//$out = $treeManager->changeOrder($elementId, $oldOwnerEl, $destOwnerEl, $position);
+							$out = 0;
 						}
 							
 					}
@@ -484,9 +490,9 @@ class EditorController extends Controller
 		$fileParent = str_replace("FOLDER_SEPARATOR", "/", $fileParent);
 		$file = str_replace("FOLDER_SEPARATOR", "/", $file);
 		if(strcmp($fileParent, '/') == 0)
-			$realElementId = '/' . substr($file, strrpos($file, "/"), strlen($file));
+			$realElementId = substr($file, strrpos($file, "/"), strlen($file));
 		else
-			$realElementId = $fileParent . '/' . substr($file, strrpos($file, "/"), strlen($file));
+			$realElementId = $fileParent . substr($file, strrpos($file, "/"), strlen($file));
 		$em = $this->get('doctrine.orm.entity_manager');
 		$fileInDb = $em->getRepository('MakinMindEditorBundle:File')->findOneByName($realElementId);
 		if($fileInDb)

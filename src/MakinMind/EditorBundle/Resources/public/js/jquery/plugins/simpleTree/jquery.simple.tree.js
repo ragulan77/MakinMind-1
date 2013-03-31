@@ -440,10 +440,10 @@ $.fn.simpleTree = function(opt){
 	            cache: false,
 	            dataType : 'text',
 	            success: function(data){
-	            	var response=$(data);
-	                if(!(parseInt(response)))
+	            	var response=data;
+	                if(parseInt(response) == 0)
 	                {
-	                   alert("Vous n'avez pas le droit de modifier ce fichier");
+	                   alert("Vous n'avez pas le droit de modifier ce fichier ");
 	                   window.location.reload();
 	               	}
 	               	else

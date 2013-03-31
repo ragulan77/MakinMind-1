@@ -183,7 +183,11 @@ class FileTreeManager
 		
 		$newFullPath = $this->getFullPath($realDestOwnerEl . "/". $elementName);
 		
-		$newElementId = $destOwnerEl . self::FOLDER_SEPARATOR . $elementName;
+		if(strcmp($destOwnerEl, "FOLDER_SEPARATOR") == 0)
+			$newElementId = self::FOLDER_SEPARATOR . $elementName;
+		else
+			$newElementId = $destOwnerEl . self::FOLDER_SEPARATOR . $elementName;
+
 		$out = FAILED;
 
 		if (file_exists($newFullPath) === true && dirname($fullPath) != dirname($newFullPath)) {
