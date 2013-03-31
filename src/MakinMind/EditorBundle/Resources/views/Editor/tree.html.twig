@@ -272,8 +272,8 @@ function TreeOperations()
 	            	var response=data;
 	                if(parseInt(response) == 0)
 	                {
+	                	treeOps.treeBusy = false;
 	                   alert("Vous n'avez pas le droit de supprimer ce fichier ");
-	                   //window.location.reload();
 	               	}
 	               	else
 	               	{	      

@@ -494,14 +494,16 @@ class EditorController extends Controller
 		else
 			$realElementId = $fileParent . substr($file, strrpos($file, "/"), strlen($file));
 		$em = $this->get('doctrine.orm.entity_manager');
-		$fileInDb = $em->getRepository('MakinMindEditorBundle:File')->findOneByName($realElementId);
-		if($fileInDb)
+		//$fileInDb = $em->getRepository('MakinMindEditorBundle:File')->findOneByName($realElementId);
+		$query = $em->createQuery("SELECT f FROM MakinMind\EditorBundle\Entity\File f WHERE f.name LIKE ?1");
+		$query->setParameter(1, $realElementId.'%');
+		$files = $query->getResult();
+		if($files)
 		{
 			$author = $this->container->get('security.context')->getToken()->getUser();
-			if($fileInDb->getAuthor() == $author)
-				return new Response(1);
-			else
-				return new Response(0);
+			foreach($files as $file)
+				if($file->getAuthor() != $author && $file->getPrivileges() == 0)
+					return new Response(0);
 		}
 		return new Response(1);
 	}
