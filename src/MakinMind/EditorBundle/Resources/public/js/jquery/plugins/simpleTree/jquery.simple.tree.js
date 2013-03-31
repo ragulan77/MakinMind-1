@@ -432,7 +432,6 @@ $.fn.simpleTree = function(opt){
 
 			var node_source = dragNode_source;
 			var url1  = Routing.generate('EditorBundle_checkFileOwner', { "fileParent": TREE.ownerElOfDraggingItem, "file": $(dragNode_source).attr('id') });
-			//alert(url1);
 			$.ajax({
 	            type: "POST",
 	            url: url1,

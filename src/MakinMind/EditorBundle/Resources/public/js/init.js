@@ -29,12 +29,12 @@ $(document).ready(function() {
 	
 	
 	// setting menu texts 
-	$('#myMenu1 .addDoc').append(langManager.addDocMenu);
-	$('#myMenu1 .addFolder').append(langManager.addFolderMenu);
-	$('#myMenu1 .edit, #myMenu2 .edit').append(langManager.editMenu);
-	$('#myMenu1 .delete, #myMenu2 .delete').append(langManager.deleteMenu);
-	$('#myMenu1 .expandAll').append(langManager.expandAll);
-	$('#myMenu1 .collapseAll').append(langManager.collapseAll);
+	$('#myMenu1 .addDoc').append('Add file');
+	$('#myMenu1 .addFolder').append('Add folder');
+	$('#myMenu1 .edit, #myMenu2 .edit').append('Edit');
+	$('#myMenu1 .delete, #myMenu2 .delete').append('Delete');
+	$('#myMenu1 .expandAll').append('Expand all');
+	$('#myMenu1 .collapseAll').append('Collapse all');
 	
 		
 	// initialization of tree
@@ -49,25 +49,18 @@ $(document).ready(function() {
 		 * Callback function is called when one item is clicked
 		 */	
 		afterClick:function(node){
-				//alert($('span:first', node).text() + " clicked");
-				//alert($('span:first',node).parent().attr('id'));
+
 		},
 		/**
 		 * Callback function is called when one item is double-clicked
 		 */	
 		afterDblClick:function(node){
-			//alert($('span:first',node).text() + " double clicked");		
-			//alert(simpleTree.get(0).getSelected().prev());
 			var idProject = $("#idProject").html();
 			var val=Routing.generate('EditorBundle_editor', {'id': idProject});
 			val += "?fichier="+$('span:first',node).parent().attr('id');
 			parent.$(parent.document).trigger("yourproject",val);
-			 
-		//alert($('span:first',node).parent().attr('id')) ;
-		//alert(window.location.href.toString());
 		},
 		afterMove:function(destination, source, pos) {
-		//	alert("destination-"+destination.attr('id')+" source-"+source.attr('id')+" pos-"+pos);	
 			if (dragOperation == true) 
 			{				
 				var params = "action=changeOrder&elementId="+source.attr('id')+"&destOwnerEl="+destination.attr('id')+

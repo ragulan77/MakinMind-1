@@ -46,7 +46,7 @@ function TreeOperations()
 	this.isTreeBusy = function()
 	{
 		if (this.treeBusy == true){
-			alert(langManager.doOneOperationAtATime);
+			alert('Only one operation can be active at any time.');
 		}
 		return (this.treeBusy);
 	}
@@ -94,7 +94,7 @@ function TreeOperations()
 		if (show == true) {
 			clearTimeout(treeOps.timer);
 			$('#processing').hide();
-			$('#processing').html(langManager.operationInProcess);
+			$('#processing').html('Completing your request.');
 			$('#processing').show();
 			
 		}
@@ -113,7 +113,7 @@ function TreeOperations()
 	{
 		var selectedNode = treeOps.trGetSelected();
 		if (selectedNode.html() == null){
-			alert(langManager.selectNode2MakeOperation);
+			alert('To make an operation please click an item to activate it.');
 			return null;
 		}
 		return selectedNode;
@@ -257,13 +257,32 @@ function TreeOperations()
 			return;
 		}	
 	
-		if (confirm(langManager.deleteConfirm))
+		if (confirm('Are you sure you want to delete this item?'))
 		{
 			treeOps.treeBusy = true;
 			var ownerEl = treeOps.trGetSelected().parent().parent().attr('id');
-		 	var params = "action=deleteElement&elementId="+treeOps.trGetSelected().attr('id')
+			var url1  = Routing.generate('EditorBundle_checkFileOwner', { "fileParent": ownerEl, "file": treeOps.trGetSelected().attr('id') });
+			$.ajax({
+	            type: "POST",
+	            url: url1,
+	            data: $(this).serialize(),
+	            cache: false,
+	            dataType : 'text',
+	            success: function(data){
+	            	var response=data;
+	                if(parseInt(response) == 0)
+	                {
+	                   alert("Vous n'avez pas le droit de supprimer ce fichier ");
+	                   //window.location.reload();
+	               	}
+	               	else
+	               	{	      
+		 				var params = "action=deleteElement&elementId="+treeOps.trGetSelected().attr('id')
 		 				 + "&ownerEl=" + ownerEl;
-			treeOps.ajaxReq(params, structureManagerURL, treeOps.trDeleteElement);
+						treeOps.ajaxReq(params, structureManagerURL, treeOps.trDeleteElement);
+	               	}
+	            }
+	        });
 		}	
 	}
 /*******************************************************	
@@ -372,16 +391,19 @@ function TreeOperations()
 								var t = eval(result);
 								// if result is less than 0, it means an error occured														
 								if (treeOps.isInt(t) == true  && t < 0) { 
-									alert(eval("langManager.error_" + Math.abs(t)));									
+									if(Math.abs(t) == 1)
+										alert('An error occured in the operation');
+									else if(Math.abs(t) == 2)
+										alert('The element with the same name already exists');																			
 								}	
 								else{ // if result is greater than 0 it means operation is succesfull
 									callback(result);
-									treeOps.showOperationInfo(langManager.missionCompleted);
+									treeOps.showOperationInfo('Request is completed succesfully.');
 								}
 							}
 							catch(ex) {	// if result is string it means operation is succesfull				
 								callback(result);
-								treeOps.showOperationInfo(langManager.missionCompleted);								
+								treeOps.showOperationInfo('Request is completed succesfully.');								
 							}
 			};
 			

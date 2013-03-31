@@ -7,7 +7,7 @@ function languageManager() {
 		this.lang = lang
 		this.url = location.href.substring(0, location.href.lastIndexOf('/'));
 		
-		document.write("<script language='javascript' src='"+this.url+"/js/langs/"+this.lang+".js'></script>");
+		document.write("<script language='javascript' src='./langs/en.js'></script>");
 	}
 	
 	this.addIndexes= function() {
