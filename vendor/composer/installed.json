@@ -752,5 +752,66 @@
         "keywords": [
             "User management"
         ]
+    },
+    {
+        "name": "friendsofsymfony/comment-bundle",
+        "version": "v1.0.0",
+        "version_normalized": "1.0.0.0",
+        "target-dir": "FOS/CommentBundle",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/FriendsOfSymfony/FOSCommentBundle.git",
+            "reference": "v1.0.0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://github.com/FriendsOfSymfony/FOSCommentBundle/zipball/v1.0.0",
+            "reference": "v1.0.0",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.2",
+            "symfony/framework-bundle": "2.*",
+            "symfony/security-bundle": "2.*"
+        },
+        "suggest": {
+            "symfony/doctrine-bundle": "*",
+            "symfony/mongodb-odm-bundle": "*",
+            "doctrine/couchdb-odm-bundle": "*"
+        },
+        "time": "2012-02-11 16:59:23",
+        "type": "symfony-bundle",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "FOS\\CommentBundle": ""
+            }
+        },
+        "notification-url": "http://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Thibault Duplessis",
+                "email": "thibault.duplessis@gmail.com",
+                "homepage": "http://ornicar.github.com"
+            },
+            {
+                "name": "Tim Nagel",
+                "email": "tim@nagel.com.au"
+            },
+            {
+                "name": "FriendsOfSymfony Community",
+                "homepage": "https://github.com/friendsofsymfony/FOSCommentBundle/contributors"
+            }
+        ],
+        "description": "This Bundle provides threaded comment functionality for Symfony2 applications",
+        "homepage": "http://friendsofsymfony.github.com",
+        "keywords": [
+            "comment",
+            "threads",
+            "forum"
+        ]
     }
 ]

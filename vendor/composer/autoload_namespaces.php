@@ -20,5 +20,6 @@ return array(
     'Symfony\\Bundle\\SecurityBundle' => $vendorDir . '/symfony/security-bundle/',
     'Symfony\\Bundle\\FrameworkBundle' => $vendorDir . '/symfony/framework-bundle/',
     'FOS\\UserBundle' => $vendorDir . '/friendsofsymfony/user-bundle/',
+    'FOS\\CommentBundle' => $vendorDir . '/friendsofsymfony/comment-bundle/',
     'Doctrine\\Common' => $vendorDir . '/doctrine/common/lib/',
 );
