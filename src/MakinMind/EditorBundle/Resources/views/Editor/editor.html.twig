@@ -9,6 +9,9 @@
 
 {% block resources %}
 {{parent()}}
+
+<link rel="stylesheet" href="{{ asset('bundles/makinmindeditor/css/comments.css') }}" type="text/css" />
+
 <link rel="stylesheet" href="layout/style.css" type="text/css">
 <script src="ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="layout/js/jquery.js"></script>
@@ -28,12 +31,16 @@
 
 {% block content %}
 	<h3 class="heading_w_icon">Editeur du projet {{project.name}}</h3>
-	<h5>{{file | replace({'FOLDER_SEPARATOR' : '/'})}}</h5>
+	<h5>{{file | replace({'FOLDER_SEPARATOR' : '/'})}} 
+		{% if fileInDb is not null %}
+			-- {{fileInDb.author.firstname}} {{fileInDb.author.lastname | upper}}
+		{% endif %}
+	</h5>
 	<!-- Form de textarea  -->
 <style type="text/css" media="screen">
     #editor { 
     position: relative;
-    width: 600px;
+    width: 650px;
     height: 400px;
     }
 </style>
@@ -43,7 +50,14 @@
 		<div class="separator" style="height:37px;"></div>
 		{% if editable %}
 		<div>
-			<button class="btn">Sauvegarder</button>
+			<button class="btn" id="save">Sauvegarder</button> 
+			{% if app.security.getToken().getUser() == fileInDb.author %}
+				{% if fileInDb.privileges == 0 %}
+					<button class="btn" style="float:right" id="privileges">privé</button>
+				{% else %} 
+					<button class="btn" style="float:right" id="privileges">public</button>
+				{% endif %}
+			{% endif %}
 		</div>
 		{% endif %}
 	<script type="text/javascript">
@@ -56,7 +70,7 @@
     		if(!editable)
     			editor.setReadOnly(true); 
 
-			$(".btn").click(function(){
+			$("#save").click(function(){
 				var filename = $('#fileName').text();
 				var code = editor.getSession().getValue();
 				$.ajax({
@@ -83,8 +97,38 @@
 	        	});
 	        	return false;
 			});
+
+			$("#privileges").click(function(){
+				{% if fileInDb is not null %}
+				var fileId = {{fileInDb.id}};
+				{% endif %}
+				$.ajax({
+		            type: "POST",
+		            url: Routing.generate('EditorBundle_changeFilePrivileges', {"id": fileId }),
+		            cache: false,
+		            dataType : 'text',
+		            success: function(data){
+		                if(data == 0)
+		                	$("#privileges").html("privé");
+		                else
+		                	$("#privileges").html("public");
+		            },
+		            beforeSend: function(){
+		            	//$('#ApplyTermsForm p').show();
+		            	//$('#ApplyTermsForm div').hide();
+		            },
+		            complete: function(){
+		            	//$('#ApplyTermsForm p').hide();
+		            	//$('#ApplyTermsForm div').show();
+		            	//$('#ApplyTermsForm .modal-footer > button.btn').trigger('click');
+		            }
+	        	});
+	        	return false;
+			});
 		});
 	</script>
+	<div class="line_2" style="margin:29px 0px 35px;"></div>
+	{% include 'FOSCommentBundle:Thread:async.html.twig' with {'id': 'foo'} %}
 {% endblock %}
 
 {% block right %}

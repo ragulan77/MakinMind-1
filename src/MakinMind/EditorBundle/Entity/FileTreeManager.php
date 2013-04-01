@@ -74,6 +74,7 @@ class FileTreeManager
 	{
 		$realOwnerEl = str_replace(self::FOLDER_SEPARATOR, self::DEFAULT_FOLDER_SEPARATOR, $ownerEl);
 		$fullPath = $this->getFullPath($realOwnerEl);
+		//echo $fullPath;
 		//$fullPath = substr($fullPath, 0, -1);
 		$str = null;
 		if (is_dir($fullPath))

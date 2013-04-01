@@ -40,11 +40,13 @@ if (TARGET_PLATFORM == FILE_SYSTEM_PLATFORM)
  	* if FILE_SYSTEM_PLATFORM is selected as TARGET_PLATFORM,
  	* then assign root folder adress to FILE_ROOT macro
  	*/ 
+ 	//GROSSE MODIF ICI
+ 	/*
  	$dir = $this->get('kernel')->getRootDir();
  	$dir = str_replace('/app', '/src/MakinMind/ProjectBundle/Resources/Projects', $dir);
-	$dir .= '/P1';
+	$dir .= '/P13';
 	
-	define("FILE_ROOT", $dir); 
+	define("FILE_ROOT", $dir); */
 }
 else if (TARGET_PLATFORM == DATABASE_PLATFORM)
 {

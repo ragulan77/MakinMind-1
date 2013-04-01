@@ -25,8 +25,20 @@ class EditorController extends Controller
      */
 	public function editorAction(Project $project)
 	{
-		//$user = $this->container->get('security.context')->getToken()->getUser();
-		//if($user != $project)
+		$user = $this->container->get('security.context')->getToken()->getUser();
+		if($user != $project->getOwner())
+		{
+			$emTmp = $this->get('doctrine.orm.entity_manager');
+			$contract = $emTmp->getRepository('MakinMindProjectBundle:Contract')->findOneBy(array("worker"=>$user->getId(), "project" => $project->getId()));
+			if(is_null($contract))
+				throw $this->createNotFoundException("Cette page n'hexiste pas !");
+			else
+			{
+				if(is_null($contract->getSignDate()))
+					throw $this->createNotFoundException("Vous n'avez pas signé le contrat ! ");
+			}
+
+		}
 
 		$request = $this->getRequest();
 		$data = '';
@@ -77,7 +89,7 @@ class EditorController extends Controller
 				fclose($fh);
 			}
 	    }
-		return $this->render('MakinMindEditorBundle:Editor:editor.html.twig', array('data'=>$data, 'project'=> $project, 'file'=> $fichier, 'editable'=> $editable));
+		return $this->render('MakinMindEditorBundle:Editor:editor.html.twig', array('data'=>$data, 'project'=> $project, 'file'=> $fichier, 'editable'=> $editable, 'fileInDb' => $fileInDb));
 	}
 
 	/**
@@ -124,7 +136,11 @@ class EditorController extends Controller
 			die("FAILED");
 		}
 		define("IN_PHP", true);
+		$dir = $this->get('kernel')->getRootDir();
+		$dir = str_replace('/app', '/src/MakinMind/ProjectBundle/Resources/Projects', $dir);
+		$dir .= '/P'.$project->getId();
 
+		define("FILE_ROOT", $dir);
 		require_once("TreeManager/common.php");
 
 		$out = NULL;
@@ -501,10 +517,26 @@ class EditorController extends Controller
 		if($files)
 		{
 			$author = $this->container->get('security.context')->getToken()->getUser();
-			foreach($files as $file)
+			foreach($files as $file){
 				if($file->getAuthor() != $author && $file->getPrivileges() == 0)
 					return new Response(0);
+			}
 		}
 		return new Response(1);
+	}
+
+	/**
+     * @Secure(roles="IS_AUTHENTICATED_REMEMBERED")
+     */
+	public function changePrivilegesAction(File $file)
+	{
+		$em = $this->get('doctrine.orm.entity_manager');
+		$em->persist($file);
+		if($file->getPrivileges() == 0)
+			$file->setPrivileges(1);
+		else
+			$file->setPrivileges(0);
+		$em->flush();
+		return new Response($file->getPrivileges());
 	}
 }

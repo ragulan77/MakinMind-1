@@ -33,3 +33,9 @@ EditorBundle_checkFileOwner:
     defaults: {_controller: MakinMindEditorBundle:Editor:checkFileOwner}
     options:
         expose: true
+
+EditorBundle_changeFilePrivileges:
+    pattern: /changePrivileges/{id}
+    defaults: {_controller: MakinMindEditorBundle:Editor:changePrivileges}
+    options:
+        expose: true
