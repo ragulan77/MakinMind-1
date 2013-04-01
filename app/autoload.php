@@ -14,7 +14,8 @@ $loader->registerNamespaces(array(
     'Monolog'          => __DIR__.'/../vendor/monolog/src',
     'Assetic'          => __DIR__.'/../vendor/assetic/src',
     'Metadata'         => __DIR__.'/../vendor/metadata/src',
-    'FOS'              => array(__DIR__.'/../vendor/friendsofsymfony/user-bundle', __DIR__.'/../vendor/bundles'),
+    'FOS'              => array(__DIR__.'/../vendor/friendsofsymfony/user-bundle', __DIR__.'/../vendor/bundles', __DIR__.'/../vendor/friendsofsymfony/comment-bundle'),
+    'FOS\\Rest'        => __DIR__.'/../vendor/fos',
 ));
 $loader->registerPrefixes(array(
     'Twig_Extensions_' => __DIR__.'/../vendor/twig-extensions/lib',
