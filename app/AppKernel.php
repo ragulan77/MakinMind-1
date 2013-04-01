@@ -24,6 +24,9 @@ class AppKernel extends Kernel
             new MakinMind\EditorBundle\MakinMindEditorBundle(),
             new MakinMind\PortalBundle\MakinMindPortalBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
+            new FOS\RestBundle\FOSRestBundle(),
+            new FOS\CommentBundle\FOSCommentBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle($this),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
