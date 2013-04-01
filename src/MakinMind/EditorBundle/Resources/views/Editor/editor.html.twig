@@ -128,7 +128,10 @@
 		});
 	</script>
 	<div class="line_2" style="margin:29px 0px 35px;"></div>
-	{% include 'FOSCommentBundle:Thread:async.html.twig' with {'id': 'foo'} %}
+	{% if fileInDb is not null %}
+		{% include 'FOSCommentBundle:Thread:async.html.twig' with {'id': fileInDb.id } %} 
+	{% endif %}
+	
 {% endblock %}
 
 {% block right %}
